@@ -20,7 +20,7 @@ class Config:
     def load() -> 'Config':
         with open("config.conf", "r") as f:
             config = json.load(f)
-        return Config(config["ips"], config["macs"], config["local broadcast address"], int(config["wait between pings in seconds"]))
+        return Config(config['computers']["ips"], config['computers']["macs"], config["local broadcast address"], int(config["wait between pings in seconds"]))
 
 def log(mac_address: str) -> None:
     with open("log.lg", 'a') as f:
