@@ -3,51 +3,55 @@ try:
     from typing import List
     from wakeonlan import send_magic_packet
     import subprocess, json
-    from datetime import datetime
     from os.path import exists
     from time import sleep
+    from logging import Logger
 except:
     print("Please install the requirements.txt")
     exit(1)
 
 class Config:
-    def __init__(self, ips: List[str], macs: List[str], local_broadcast_address: str, wait_between_ping: int):
+    def __init__(self, ips: List[str], macs: List[str], local_broadcast_address: str, wait_between_ping: int, log_level: str):
         self.ips = ips
         self.macs = macs
         self.local_broadcast_address = local_broadcast_address
         self.wait_between_ping = wait_between_ping
+        self.log_level = log_level
 
     def load() -> 'Config':
         with open("config.conf", "r") as f:
             config = json.load(f)
-        return Config(config['computers']["ips"], config['computers']["macs"], config["local broadcast address"], int(config["wait between pings in seconds"]))
+        return Config(config['computers']["ips"], config['computers']["macs"], config["local broadcast address"], int(config["wait between pings in seconds"]), config["log level"])
 
-def log(mac_address: str) -> None:
-    with open("log.lg", 'a') as f:
-        f.write(f"Host ({mac_address}) was offlone at {datetime.now()}\n")
+logger: Logger = None
 
 def ping(ip_address: str) -> bool:
-    param = '-n' if system().lower() == "windows" else '-c'
-    command = ['ping', param, '1', ip_address]
+    command = ['ping', '-c', '1', ip_address]
     return subprocess.call(command) == 0
 
 def send_wol(mac_address: str, local_broadcast_address: str) -> None:
-    log(mac_address)
+    logger.info(mac_address)
     send_magic_packet(mac_address, ip_address=local_broadcast_address)
 
 def main():
+    global logger
     if not exists("config.conf"):
         print("Config file not found, creating default config file")
         with open("config.conf", "w") as f:
-            json.dump({'computers': {'ips': [], 'macs': []}, 'local broadcast address': '192.168.0.255', "wait between pings in seconds": '180'}, f)
+            json.dump({'computers': {'ips': [], 'macs': []}, 'local broadcast address': '192.168.0.255', "wait between pings in seconds": '180', 'log level': 'INFO'}, f)
         print('Config file created.\nPlease fill in the config.conf file besides the python file with the relevant info.')
         exit(0)
     config = Config.load()
+    logger = Logger('keep-server-awake', config.log_level)
+    logger.info("Program started!")
     while True:
-        for ip, mac in zip(config.ips, config.macs):
-            if not ping(ip):
-                send_wol(mac, config.local_broadcast_address)
-        sleep(config.wait_between_ping)
+        try:
+            for ip, mac in zip(config.ips, config.macs):
+                if not ping(ip):
+                    send_wol(mac, config.local_broadcast_address)
+            sleep(config.wait_between_ping)
+        except Exception as ex:
+            logger.exception(f"Exception in main loop: {ex}")
     
 if __name__ == "__main__":
     main()
