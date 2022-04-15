@@ -23,7 +23,7 @@ class Config:
             config = json.load(f)
         return Config(config['computers']["ips"], config['computers']["macs"], config["local broadcast address"], int(config["wait between pings in seconds"]), config["log level"])
 
-logger: Logger = None
+logger: Logger = Logger('keep-server-awake', "DEBUG")
 
 def ping(ip_address: str) -> bool:
     command = ['ping', '-c', '1', ip_address]
@@ -38,6 +38,8 @@ def main(install_path: str):
     if install_path == "": install_path = "."
     config_path = f"{install_path}/config.conf"
     if not exists(config_path):
+        logger.error("CONFIG NOT FOUND")
+        logger.debug(f"Path: {config_path}")
         print("Config file not found, creating default config file")
         with open("config.conf", "w") as f:
             json.dump({'computers': {'ips': [], 'macs': []}, 'local broadcast address': '192.168.0.255', "wait between pings in seconds": '180', 'log level': 'INFO'}, f)
