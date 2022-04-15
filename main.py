@@ -54,5 +54,8 @@ def main(install_path: str):
             sleep(config.wait_between_ping)
         except Exception as ex:
             log(f"Exception in main loop: {ex}")
+        except KeyboardInterrupt:
+            log("Interrupted by user!")
+            break
 if __name__ == "__main__":
     main('/'.join(argv[-1].split('/')[:-1]))

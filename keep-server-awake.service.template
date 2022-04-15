@@ -5,7 +5,7 @@ After=multi-user.target
 [Service]
 Type=simple
 Restart=always
-ExecStart=/usr/bin/python3 {file_path}
+ExecStart=/usr/bin/python3 <file_path>
 
 [Install]
 WantedBy=multi-user.target
