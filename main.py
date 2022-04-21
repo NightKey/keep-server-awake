@@ -58,5 +58,6 @@ def main(install_path: str):
         except KeyboardInterrupt:
             log("Interrupted by user!")
             break
+
 if __name__ == "__main__":
     main('/'.join(argv[-1].split('/')[:-1]))
