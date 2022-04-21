@@ -46,6 +46,7 @@ def main(install_path: str):
         print('Config file created.\nPlease fill in the config.conf file besides the python file with the relevant info.')
         exit(0)
     config = Config.load(config_path)
+    log(f"Started with {len(config.ips)} servers set.")
     while True:
         try:
             for ip, mac in zip(config.ips, config.macs):
