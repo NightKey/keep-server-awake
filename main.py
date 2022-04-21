@@ -12,7 +12,7 @@ except:
 
 def log(message):
     with open("/var/log/keep-server-alive.log", 'a') as f:
-        f.write(f"[{datetime.now()}]: {message}")
+        f.write(f"[{datetime.now()}]: {message}\n")
 
 class Config:
     def __init__(self, ips: List[str], macs: List[str], local_broadcast_address: str, wait_between_ping: int, log_level: str):
