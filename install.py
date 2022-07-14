@@ -6,7 +6,7 @@ try:
     with open("keep-server-awake.service.template", 'r') as f:
         service = f.read(-1)
     service = service.replace(
-        "<folder_path>", f'{getcwdb().decode("utf-8")}').replace("file_name", "main.py")
+        "<folder_path>", f'{getcwdb().decode("utf-8")}').replace("<file_name>", "main.py")
     with open("/etc/systemd/system/keep-server-awake.service", "w") as f:
         f.write(service)
     subprocess.call(["sudo", "systemctl", "daemon-reload"])
