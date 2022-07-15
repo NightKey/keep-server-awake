@@ -4,6 +4,7 @@ try:
     import subprocess
     import json
     from os.path import exists, realpath
+    from os import curdir
     from time import sleep
     from sys import argv
     from smdb_logger import Logger
@@ -54,7 +55,7 @@ def send_wol(mac_address: str, local_broadcast_address: str) -> None:
     send_magic_packet(mac_address, ip_address=local_broadcast_address)
 
 
-def main(install_path: str):
+def main():
     config_path = "config.conf"
     if not exists(config_path):
         logger.debug(f"Path: {config_path}")
@@ -71,7 +72,7 @@ def main(install_path: str):
     "log level":"INFO"
 }""")
         logger.info(
-            f'Config file created.\nPlease fill in the config.conf file in "{realpath(install_path)}" with the relevant info.')
+            f'Config file created.\nPlease fill in the config.conf file in "{realpath(curdir)}" with the relevant info.')
         raise ConfigException("No configuration file was present!")
     logger.debug("Loading configuration")
     config = Config.load(config_path)
