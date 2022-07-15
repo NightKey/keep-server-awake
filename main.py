@@ -55,9 +55,7 @@ def send_wol(mac_address: str, local_broadcast_address: str) -> None:
 
 
 def main(install_path: str):
-    if install_path == "":
-        install_path = "."
-    config_path = f"{install_path}/config.conf"
+    config_path = "config.conf"
     if not exists(config_path):
         logger.debug(f"Path: {config_path}")
         logger.warning("Config file not found, creating default config file")
@@ -101,7 +99,7 @@ def main(install_path: str):
 
 if __name__ == "__main__":
     try:
-        main('/'.join(argv[-1].split('/')[:-1]))
+        main()
     except Exception as ex:
         logger.error(f"Exception occured: {ex}")
     finally:
