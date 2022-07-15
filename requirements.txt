@@ -1,1 +1,2 @@
 wakeonlan
+smdb_logger
