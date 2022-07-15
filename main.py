@@ -80,4 +80,9 @@ def main(install_path: str):
 
 
 if __name__ == "__main__":
-    main('/'.join(argv[-1].split('/')[:-1]))
+    try:
+        main('/'.join(argv[-1].split('/')[:-1]))
+    except Exception as ex:
+        logger.error(f"Exception occured: {ex}")
+    finally:
+        logger.flush_buffer()
