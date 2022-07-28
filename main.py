@@ -1,6 +1,7 @@
 try:
     from typing import List
     from wakeonlan import send_magic_packet
+    from signal import signal, SIGINT, SIGTERM, SIGBREAK, Signals
     import subprocess
     import json
     from os.path import exists, realpath
@@ -55,6 +56,13 @@ def send_wol(mac_address: str, local_broadcast_address: str) -> None:
     send_magic_packet(mac_address, ip_address=local_broadcast_address)
 
 
+def signal_handler(signal: int, _):
+    logger.debug(
+        f"Incoming termination signal ({Signals(signal).name}), exiting gracefully.")
+    logger.flush_buffer()
+    exit(0)
+
+
 def main():
     config_path = "config.conf"
     if not exists(config_path):
@@ -98,8 +106,17 @@ def main():
             logger.info(f"Exception in main loop: {ex}")
 
 
+def setup_signal_handlers():
+    signal(SIGINT, signal_handler)
+    signal(SIGTERM, signal_handler)
+    signal(SIGBREAK, signal_handler)
+
+
 if __name__ == "__main__":
     try:
+        logger.debug("Creating signal handlers...")
+        setup_signal_handlers()
+        logger.debug("Starting main method...")
         main()
     except Exception as ex:
         logger.error(f"Exception occured: {ex}")
