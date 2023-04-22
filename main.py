@@ -1,7 +1,7 @@
 try:
     from typing import List
     from wakeonlan import send_magic_packet
-    from signal import signal, SIGINT, SIGTERM, SIGBREAK, Signals
+    from signal import signal, SIGINT, SIGTERM, Signals
     import subprocess
     import json
     from os.path import exists, realpath
@@ -9,8 +9,9 @@ try:
     from time import sleep
     from sys import argv
     from smdb_logger import Logger
-except:
+except Exception as ex:
     print("Please install the requirements.txt")
+    print(ex)
     exit(1)
 
 
@@ -109,7 +110,6 @@ def main():
 def setup_signal_handlers():
     signal(SIGINT, signal_handler)
     signal(SIGTERM, signal_handler)
-    signal(SIGBREAK, signal_handler)
 
 
 if __name__ == "__main__":
