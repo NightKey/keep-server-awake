@@ -10,7 +10,7 @@ target_ip: Union[str, None] = None
 def check():
     fail_count = 0
     while True:
-        command = ['ping', '-c', '1', target_ip]
+        command = ['ping', '-n', '1', target_ip]
         if call(command) != 0:
             fail_count += 1
             print(f"Check failed {fail_count} times.")
