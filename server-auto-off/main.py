@@ -1,7 +1,7 @@
 from time import sleep
 import requests
 from typing import Union
-from subprocess import call
+from subprocess import call, DEVNULL
 from sys import argv
 
 
@@ -11,11 +11,11 @@ def check():
     fail_count = 0
     while True:
         command = ['ping', '-n', '1', target_ip]
-        if call(command) != 0:
+        if call(command, stdout=DEVNULL, stderr=DEVNULL) != 0:
             fail_count += 1
             print(f"Check failed {fail_count} times.")
         else:
-            if (fail_count != 0): print(f"Check succeeded after {fail_count} times.")
+            if (fail_count != 0): print(f"Check succeeded after {fail_count} failiure.")
             fail_count = 0
 
         if fail_count == 5:
