@@ -7,7 +7,6 @@ try:
     from os.path import exists, realpath
     from os import curdir
     from time import sleep
-    from sys import argv
     from smdb_logger import Logger
     from threading import Event
 except Exception as ex:
@@ -28,6 +27,7 @@ class DifferentLenghtException(Exception):
 logger = Logger("keep-server-awake.log", ".", level="DEBUG",
                 log_to_console=True, storage_life_extender_mode=True, max_logfile_size=500)
 stop_event = Event()
+pihole_update_delay = 0
 
 class Config:
     def __init__(self, ips: List[str], macs: List[str], local_broadcast_address: str, wait_between_ping: int, log_folder: str, log_level: str, do_ensurance: bool = False):
@@ -47,6 +47,9 @@ class Config:
         except Exception as ex:
             raise ConfigException(ex.args)
 
+def update_pihole() -> None:
+    subprocess.call(["pihole", "-up"])
+    subprocess.call(["pihole", "-g"])
 
 def ping(ip_address: str) -> bool:
     logger.debug(f"Pinging the following IP: {ip_address}")
@@ -110,6 +113,10 @@ def main():
             for ip, mac in zip(config.ips, config.macs):
                 if not ping(ip):
                     send_wol(mac, config.local_broadcast_address)
+                pihole_update_delay += 1
+                if pihole_update_delay == 50:
+                    pihole_update_delay = 0
+                    update_pihole()
             sleep(config.wait_between_ping)
         except KeyboardInterrupt:
             logger.info("Interrupted by user!")
