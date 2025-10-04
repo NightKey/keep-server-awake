@@ -1,7 +1,7 @@
 from time import sleep
 import requests
 from typing import Union
-from subprocess import run
+from subprocess import call
 from sys import argv
 
 
@@ -10,16 +10,17 @@ target_ip: Union[str, None] = None
 def check():
     fail_count = 0
     while True:
-        response = requests.get(f"http://{target_ip}:9999")
-        if response.status_code != 418:
+        command = ['ping', '-c', '1', target_ip]
+        if call(command) != 0:
             fail_count += 1
-            print(f"Check failed {fail_count} times. Return value: {response.status_code}")
+            print(f"Check failed {fail_count} times.")
         else:
             if (fail_count != 0): print(f"Check succeeded after {fail_count} times.")
             fail_count = 0
-        
+
         if fail_count == 5:
-            run(["shutdown", "/s", "/f", "/t", "0", "/d", "u:7:0"])
+            call(["shutdown", "/s", "/f", "/t", "0", "/d", "u:7:0"])
+
         sleep(24)
 
 if __name__=="__main__":
