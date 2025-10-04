@@ -12,8 +12,8 @@ def check():
     while True:
         response = requests.get(f"http://{target_ip}:9999")
         if response.status_code != 418:
-            print(f"Check failed {fail_count + 1} times. Return value: {response.status_code}")
             fail_count += 1
+            print(f"Check failed {fail_count} times. Return value: {response.status_code}")
         else:
             if (fail_count != 0): print(f"Check succeeded after {fail_count} times.")
             fail_count = 0
