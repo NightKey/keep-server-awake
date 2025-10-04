@@ -6,9 +6,9 @@ from sys import argv
 
 
 target_ip: Union[str, None] = None
-fail_count = 0
 
 def check():
+    fail_count = 0
     while True:
         response = requests.get(f"http://{target_ip}:9999")
         if response.status_code != 418:
