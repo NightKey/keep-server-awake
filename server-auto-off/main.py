@@ -12,8 +12,10 @@ def check():
     while True:
         response = requests.get(f"http://{target_ip}:9999")
         if response.status_code != 418:
+            print(f"Check failed {fail_count + 1} times. Return value: {response.status_code}")
             fail_count += 1
         else:
+            if (fail_count != 0): print(f"Check succeeded after {fail_count} times.")
             fail_count = 0
         
         if fail_count == 5:
@@ -25,5 +27,6 @@ if __name__=="__main__":
         print(f"usage: '{__file__} -ip [IPv4 ADDRESS]'")
         input("press return to exit")
         exit(1)
+    print("Starting checker")
     target_ip = argv[argv.index('-ip') + 1]
     check()
