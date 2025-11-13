@@ -48,6 +48,7 @@ class Config:
             raise ConfigException(ex.args)
 
 def update_pihole() -> None:
+    logger.debug("Updating pihole")
     subprocess.call(["sudo", "pihole", "-up"])
     subprocess.call(["sudo", "pihole", "-g"])
 
