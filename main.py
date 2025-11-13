@@ -48,8 +48,8 @@ class Config:
             raise ConfigException(ex.args)
 
 def update_pihole() -> None:
-    subprocess.call(["pihole", "-up"])
-    subprocess.call(["pihole", "-g"])
+    subprocess.call(["sudo", "pihole", "-up"])
+    subprocess.call(["sudo", "pihole", "-g"])
 
 def ping(ip_address: str) -> bool:
     logger.debug(f"Pinging the following IP: {ip_address}")
