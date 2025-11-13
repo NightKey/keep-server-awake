@@ -71,6 +71,7 @@ def signal_handler(signal: int, _):
 
 
 def main():
+    global pihole_update_delay
     config_path = "config.conf"
     if not exists(config_path):
         logger.debug(f"Path: {config_path}")
